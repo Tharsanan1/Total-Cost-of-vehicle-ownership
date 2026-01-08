@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Investment & Fuel Efficiency Calculator</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">Car Value & Efficiency Tool</h1>
+        <p class="lead text-muted">Is the more expensive, fuel-efficient car worth the investment?</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Input Section -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Parameters</h5>
+                </div>
+                <div class="card-body">
+                    <form id="calcForm">
+                        <!-- Region Selector -->
+                        <div class="mb-4">
+                            <label for="regionSelect" class="form-label small fw-bold">Region / Currency</label>
+                            <select class="form-select" id="regionSelect">
+                                <option value="LKR" selected>Sri Lanka (LKR - Rs.)</option>
+                                <option value="USD">USA (USD - $)</option>
+                                <option value="GBP">UK (GBP - £)</option>
+                                <option value="EUR">Europe (EUR - €)</option>
+                                <option value="INR">India (INR - ₹)</option>
+                            </select>
+                        </div>
+
+                        <!-- Car A (Expensive) -->
+                        <div class="mb-4">
+                            <h6 class="text-primary border-bottom pb-2">Car A (Efficient / Expensive)</h6>
+                            <div class="mb-2">
+                                <label for="priceA" class="form-label small">Purchase Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rs.</span>
+                                    <input type="number" class="form-control" id="priceA" value="15000000">
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="mileageA" class="form-label small">Fuel Economy (kmpl)</label>
+                                <input type="number" class="form-control" id="mileageA" value="22" step="0.1">
+                            </div>
+                        </div>
+
+                        <!-- Car B (Cheaper) -->
+                        <div class="mb-4">
+                            <h6 class="text-secondary border-bottom pb-2">Car B (Standard / Cheaper)</h6>
+                            <div class="mb-2">
+                                <label for="priceB" class="form-label small">Purchase Price</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rs.</span>
+                                    <input type="number" class="form-control" id="priceB" value="10000000">
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="mileageB" class="form-label small">Fuel Economy (kmpl)</label>
+                                <input type="number" class="form-control" id="mileageB" value="12" step="0.1">
+                            </div>
+                        </div>
+
+                        <!-- Usage & Market -->
+                        <div class="mb-4">
+                            <h6 class="text-dark border-bottom pb-2">Usage & Market</h6>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label for="annualDist" class="form-label small">Annual km</label>
+                                    <input type="number" class="form-control" id="annualDist" value="15000">
+                                </div>
+                                <div class="col-6">
+                                    <label for="fuelPrice" class="form-label small">Fuel Price/L</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rs.</span>
+                                        <input type="number" class="form-control" id="fuelPrice" value="370" step="0.01">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Opportunity Cost -->
+                        <div class="mb-3">
+                            <h6 class="text-success border-bottom pb-2">Investment Opportunity</h6>
+                            <label for="interestRate" class="form-label small">Annual FD Rate (%)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="interestRate" value="12" step="0.1">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="form-text small">Return expected if price difference was in an FD.</div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-primary" id="calcBtn">Calculate Comparison</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="col-lg-8">
+            <!-- Break Even Banner -->
+            <div id="breakEvenCard" class="card shadow-sm border-0 mb-4 bg-white">
+                <div class="card-body text-center p-4">
+                    <h3 class="card-title fw-bold" id="breakEvenTitle">--</h3>
+                    <p class="card-text text-muted mb-0" id="breakEvenText">Adjust values to see when Car A pays off.</p>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">10-Year Cost Projection</h5>
+                    <div style="position: relative; height: 400px; width: 100%;">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">Yearly Breakdown</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Year</th>
+                                <th>Car A Fuel Cost</th>
+                                <th>Car B Fuel Cost</th>
+                                <th>Fuel Savings</th>
+                                <th>Lost Investment Gain</th>
+                                <th>Net Position</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Methodology Section -->
+            <div class="card shadow-sm border-0 bg-white">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0 text-secondary"><i class="bi bi-info-circle"></i> How the Calculation Works</h5>
+                </div>
+                <div class="card-body text-secondary small">
+                    <p class="mb-3">This tool compares the <strong>Total Cost of Ownership (TCO)</strong> of two vehicles over time, factoring in both direct costs and hidden financial opportunities.</p>
+                    
+                    <h6 class="fw-bold text-dark">1. The "Total Cost" (Y-Axis)</h6>
+                    <p>The graph plots the cumulative amount of money "spent" or "lost" on each car year by year. The formula is:</p>
+                    <div class="bg-light p-2 rounded mb-3 font-monospace">
+                        Total Cost = Purchase Price + (Annual Fuel Cost × Years) + Opportunity Cost
+                    </div>
+
+                    <h6 class="fw-bold text-dark">2. What is "Opportunity Cost"?</h6>
+                    <p>
+                        If you choose the cheaper car, you "save" the difference in purchase price. We assume this saving is invested (e.g., in a Fixed Deposit) 
+                        and earns compound interest every year. 
+                    </p>
+                    <p>
+                        To make the comparison fair, we add this <strong>missed interest earnings</strong> to the cost of the <em>expensive</em> car. 
+                        Essentially, buying the expensive car costs you the price tag <em>plus</em> the free money you could have made by investing the difference.
+                    </p>
+
+                    <h6 class="fw-bold text-dark">3. Assumptions</h6>
+                    <ul class="mb-0">
+                        <li>Fuel prices and interest rates remain constant over the 10-year period.</li>
+                        <li>Maintenance, insurance, and resale value are <strong>not</strong> included in this specific calculation (focus is purely on Fuel vs. Capital Efficiency).</li>
+                        <li>Compounding interest is calculated annually.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Custom JS -->
+<script src="script.js"></script>
+</body>
+</html>

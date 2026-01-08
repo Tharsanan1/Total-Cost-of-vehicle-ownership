@@ -1,0 +1,52 @@
+:root {
+    --bs-font-sans-serif: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: white;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.input-group-text {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    color: #495057;
+}
+
+/* Highlight input sections */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Make table headers sticky/clean */
+.table th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.table td {
+    font-size: 0.95rem;
+}
+
+/* Utility for negative numbers in table */
+.text-neg {
+    color: #dc3545;
+    font-weight: 500;
+}
+/* Utility for positive numbers in table */
+.text-pos {
+    color: #198754;
+    font-weight: 500;
+}
